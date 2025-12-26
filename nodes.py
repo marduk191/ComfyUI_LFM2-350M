@@ -8,7 +8,7 @@ class LFM2Loader:
     def INPUT_TYPES(s):
         return {
             "required": {
-                "repo_id": ("STRING", {"default": "LiquidAI/LFM2-350M"}),
+                "repo_id": ("STRING", {"default": "marduk191/lfm2-350m-dp-marduk191"}),
                 "precision": (["bf16", "fp16", "fp32", "auto"], {"default": "bf16"}),
                 "device": (["cuda", "cpu"], {"default": "cuda"}),
             },

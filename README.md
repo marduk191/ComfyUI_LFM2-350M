@@ -33,7 +33,7 @@ Loads the model and tokenizer.
 
 | Input | Description |
 |-------|-------------|
-| `repo_id` | HuggingFace repository ID (default: `LiquidAI/LFM2-350M`) |
+| `repo_id` | HuggingFace repository ID (default: `marduk191/lfm2-350m-dp-marduk191`) |
 | `local_path` | Optional local path to a pre-downloaded/fine-tuned model |
 | `precision` | Model precision: `bf16`, `fp16`, `fp32`, or `auto` |
 | `device` | `cuda` or `cpu` |
