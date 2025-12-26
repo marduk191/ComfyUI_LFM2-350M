@@ -105,14 +105,52 @@ class LFM2Loader:
                         low_cpu_mem_usage=True
                     )
             else:
-                # Loading from HF, use normal method
+                # Loading from HF - check if weights need _orig_mod fix
+                print("Loading from HuggingFace, checking for weight key issues...")
+                
+                # First load normally
                 model = AutoModelForCausalLM.from_pretrained(
                     path_to_load,
                     torch_dtype=dtype,
-                    device_map=device,
+                    device_map="cpu",  # Load to CPU first to check weights
                     trust_remote_code=True,
                     low_cpu_mem_usage=True
                 )
+                
+                # Check if model weights seem uninitialized (all weights have similar small values)
+                # by trying to load and fix from the HF hub directly
+                from huggingface_hub import hf_hub_download
+                import os
+                
+                try:
+                    # Download the safetensors file
+                    safetensor_path = hf_hub_download(repo_id=path_to_load, filename="model.safetensors")
+                    print(f"LFM2 Debug - Downloaded safetensors to: {safetensor_path}")
+                    
+                    from safetensors import safe_open
+                    from safetensors.torch import load_file
+                    
+                    with safe_open(safetensor_path, framework="pt") as f:
+                        keys = list(f.keys())
+                        print(f"LFM2 Debug - HF model first 5 keys: {keys[:5]}")
+                        has_orig_mod = any("_orig_mod" in k for k in keys)
+                    
+                    if has_orig_mod:
+                        print("Detected _orig_mod prefix in HF model, applying fix...")
+                        state_dict = {}
+                        sd = load_file(safetensor_path)
+                        for k, v in sd.items():
+                            new_key = k.replace("_orig_mod.", "")
+                            state_dict[new_key] = v
+                        
+                        print(f"LFM2 Debug - First 5 corrected keys: {list(state_dict.keys())[:5]}")
+                        result = model.load_state_dict(state_dict, strict=False)
+                        print(f"LFM2 Debug - Missing keys: {len(result.missing_keys)}, Unexpected: {len(result.unexpected_keys)}")
+                        
+                except Exception as e:
+                    print(f"LFM2 Debug - Could not check/fix HF weights: {e}")
+                
+                model = model.to(device)
         except Exception as e:
             raise RuntimeError(f"Failed to load model: {e}")
 
