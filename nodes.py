@@ -172,6 +172,7 @@ class LFM2Generator:
                 "top_k": ("INT", {"default": 50, "min": 0, "max": 200}),
                 "min_p": ("FLOAT", {"default": 0.15, "min": 0.0, "max": 1.0, "step": 0.01}),
                 "repetition_penalty": ("FLOAT", {"default": 1.05, "min": 1.0, "max": 2.0, "step": 0.01}),
+                "seed": ("INT", {"default": 0, "min": 0, "max": 2147483647}),
             }
         }
 
@@ -179,7 +180,7 @@ class LFM2Generator:
     FUNCTION = "generate"
     CATEGORY = "LiquidAI/LFM2"
 
-    def generate(self, model_context, tokenizer, system_prompt, prompt, max_new_tokens, temperature, top_p, top_k, min_p, repetition_penalty):
+    def generate(self, model_context, tokenizer, system_prompt, prompt, max_new_tokens, temperature, top_p, top_k, min_p, repetition_penalty, seed):
         model = model_context["model"]
         device = model_context["device"]
 
@@ -215,6 +216,13 @@ class LFM2Generator:
         if tokenizer.pad_token_id is None:
             tokenizer.pad_token_id = tokenizer.eos_token_id
             print("LFM2 Debug - pad_token_id was None, set to eos_token_id")
+
+        # Set seed for reproducibility
+        if seed > 0:
+            torch.manual_seed(seed)
+            if torch.cuda.is_available():
+                torch.cuda.manual_seed_all(seed)
+            print(f"LFM2 Debug - Using seed: {seed}")
 
         with torch.no_grad():
             outputs = model.generate(
