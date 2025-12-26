@@ -1,6 +1,6 @@
 # ComfyUI LFM2-350M Node
 
-A custom node for [ComfyUI](https://github.com/comfyanonymous/ComfyUI) to load and use the [LiquidAI LFM2-350M](https://huggingface.co/LiquidAI/LFM2-350M) language model.
+A custom node for [ComfyUI](https://github.com/comfyanonymous/ComfyUI) to load and use my custom tuned [LFM2-350M](https://huggingface.co/marduk191/lfm2-350m-dp-marduk191) model trained on 60k base pairs to work as a prompt enhancer for z-image turbo or any other long token model.
 
 ## Features
 
