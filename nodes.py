@@ -120,7 +120,6 @@ class LFM2Loader:
                 # Check if model weights seem uninitialized (all weights have similar small values)
                 # by trying to load and fix from the HF hub directly
                 from huggingface_hub import hf_hub_download
-                import os
                 
                 try:
                     # Download the safetensors file
