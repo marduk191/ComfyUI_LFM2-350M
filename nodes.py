@@ -163,9 +163,9 @@ class LFM2Generator:
             "required": {
                 "model_context": ("LFM2_MODEL",),
                 "tokenizer": ("LFM2_TOKENIZER",),
-                "system_prompt": ("STRING", {"default": "Transform the following image description into a detailed prompt for Z-Image Turbo. Use rich details, lighting info, and camera specs. Do not include negative prompts or ending explanation starting with 'this detailed prompt should'", "multiline": True}),
+                "system_prompt": ("STRING", {"default": "Transform the following image description into a detailed prompt for Z-Image Turbo. Use rich details, lighting info, and camera specs. Do not include negative prompts or ending explanation starting with 'this detailed prompt should' Only return the final prompt without any preface. Finish right after the prompt, do not add any concluding words after the prompt.", "multiline": True}),
                 "prompt": ("STRING", {"default": "Hello, how are you?", "multiline": True}),
-                "max_new_tokens": ("INT", {"default": 256, "min": 1, "max": 4096}),
+                "max_new_tokens": ("INT", {"default": 512, "min": 1, "max": 4096}),
                 "temperature": ("FLOAT", {"default": 0.3, "min": 0.0, "max": 2.0, "step": 0.01}),
                 "top_p": ("FLOAT", {"default": 0.9, "min": 0.0, "max": 1.0, "step": 0.01}),
                 "top_k": ("INT", {"default": 50, "min": 0, "max": 200}),
